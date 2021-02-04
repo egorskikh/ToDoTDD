@@ -58,13 +58,12 @@ class TaskManagerTest: XCTestCase {
     func testCheckedTaskRemovedFromTasks() {
         let firstTask = Task(title: "Foo")
         let secondTask = Task(title: "Bar")
-        
         sut.add(task: firstTask)
         sut.add(task: secondTask)
         
         sut.checkTask(at: 0)
         
-        XCTAssertEqual(sut.task(at: 0).title, "Bar")
+        XCTAssertEqual(sut.task(at: 0), secondTask)
     }
 
     func testDoneTaskAtReturnsCheckedTask() {
@@ -76,6 +75,26 @@ class TaskManagerTest: XCTestCase {
         
         let returnedTask = sut.doneTask(at: 0)
         
-        XCTAssertEqual(task.title, returnedTask.title)
+        XCTAssertEqual(task, returnedTask)
     }
+    
+    func testRemoveAllResultsCountsBeZero() {
+        sut.add(task: Task(title: "Foo"))
+        sut.add(task: Task(title: "Bar"))
+        
+        sut.checkTask(at: 0)
+        
+        sut.removeAll()
+        
+        XCTAssertTrue(sut.doneTasksCount == 0)
+        XCTAssertTrue(sut.tasksCount == 0)
+    }
+    
+    func testAddingObjectDoesNotIncrementCount() {
+        sut.add(task: Task(title: "Foo"))
+        sut.add(task: Task(title: "Foo"))
+        
+        XCTAssertTrue(sut.tasksCount == 1)
+    }
+    
 }
